@@ -164,13 +164,15 @@ class App extends Component {
         }
     });
 
-    // add local tracks
+    const instructions = [];
+
+      // add local tracks
     mpTracksLocal.forEach(t => {
 
       const name = t.track.name;
       const tempo = parseFloat(name.split(' ')[0]);
       if (isNaN(tempo) || tempo < 80 || tempo > 300) {
-        alert(`Missing tempo for: ${name}`);
+        instructions.push(`Missing tempo for: ${name}`)
       }
       tracks.push({
           id: null,
@@ -180,7 +182,14 @@ class App extends Component {
           name: t.track.name,
           isLocal: true
       })
-    })
+    });
+
+    if (instructions.length) {
+      this.setState({
+          instructions
+      })
+      return;
+    }
 
     const tracksInBands = bpmRanges.map(() => []);
 
@@ -272,7 +281,6 @@ class App extends Component {
     const newPlaylistId = createPlaylist.id;
 
 
-    const instructions = [];
     trackSlots.forEach((t,i) => {
 
       if (t.isLocal) {
@@ -288,7 +296,6 @@ class App extends Component {
       }
     })
 
-      console.log(instructions)
     this.setState({
         instructions
     })
