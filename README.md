@@ -2,12 +2,12 @@
 
 ## Setup
 
-* Source playlists are called `swingdj` and `swingdj2X`
-* Spotify mostly recognize correct tempos, but in some cases it detects half of the actual tempo. You can check if tempos are correct [here](http://sortyourmusic.playlistmachinery.com). If there is song with half tempo (typically it indicates 90-120bpm for fast song), add such song _additionally_ to `swingdj2X` playlist, so swingdj can recognize that. Its necessary to do that always when adding new songs.
+* Source playlists have to be named `swingdj` and `swingdj2X`
+* Spotify mostly recognize correct tempos, but in some cases it detects half of the actual tempo. You can check if tempos are correct [here](http://sortyourmusic.playlistmachinery.com). If there is song with half tempo (typically it indicates 90-120bpm for fast song), add such song ALSO to `swingdj2X` playlist, so swingdj can recognize that. Its necessary to do that only when adding new songs.
 
 ## Presets
 
-* Its possible to create several presets which remembers bpm ranges and playlist duration for different occasions. Its saved to browser local storage, so you need to open from same browser on same computer to see saved presets.
+* Its possible to create several presets which remembers bpm ranges and playlist duration for different occasions. Its saved to browser local storage, which means you need to open swingdj from same browser on same computer to see saved presets.
 
 ## Local files
 
