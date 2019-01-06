@@ -97,22 +97,6 @@ async function fetchIds(url, _ids, itemField, limit = 100, access_token) {
   return items;
 }
 
-// make sure it still adds up to 100%
-// update following rate or previous if its last index
-function recalculateRatios(updatedIndex, bpmRanges) {
-  let total = 0;
-
-  bpmRanges.forEach(bpmRange => {
-    total += bpmRange.rate;
-  });
-  // update after
-  if (bpmRanges.length > updatedIndex + 1) {
-    bpmRanges[updatedIndex + 1].rate -= total - 100;
-  } else {
-    bpmRanges[updatedIndex - 1].rate -= total - 100;
-  }
-}
-
 class App extends Component {
   constructor(props) {
     super(props);
@@ -127,9 +111,18 @@ class App extends Component {
         {
           name: "default",
           bpmRanges: defaultBpmRanges,
-          playlistDuration: defaultPlaylistDuration
+          playlistDuration: defaultPlaylistDuration,
+          sourcePlaylistName: "swingdj",
+          sourcePlaylist2XName: "swingdj2X"
         }
       ];
+    } else {
+      // set new defaults
+      presetsLoaded = presetsLoaded.map(p => ({
+        sourcePlaylistName: "swingdj",
+        sourcePlaylist2XName: "swingdj2X",
+        ...p
+      }));
     }
 
     this.state = {
@@ -161,9 +154,6 @@ class App extends Component {
     // would be nicer to do it in immutable way.. but too much hussle
     bpmRanges[rangeIndex][property] = value;
 
-    if (property == "rate") {
-      recalculateRatios(rangeIndex, bpmRanges);
-    }
     this.setState(
       {
         presets
@@ -196,7 +186,6 @@ class App extends Component {
     const { bpmRanges } = preset;
     const bpmRange = bpmRanges[rangeIndex];
     bpmRanges.splice(rangeIndex, 1);
-    recalculateRatios(rangeIndex - 1, bpmRanges);
     this.setState({ presets }, () => {
       this.saveToLocalStorage();
     });
@@ -234,6 +223,8 @@ class App extends Component {
 
     const preset = presets[selectedPresetIndex];
     const { playlistDuration, bpmRanges } = preset;
+    const sourcePlaylistName = preset.sourcePlaylistName;
+    const sourcePlaylist2XName = preset.sourcePlaylist2XName;
     const playlists = await fetchAll(
       `https://api.spotify.com/v1/me/playlists?limit=50`,
       "items",
@@ -241,8 +232,8 @@ class App extends Component {
     );
     // find swingdj playlist
 
-    const mainPlaylist = playlists.find(p => p.name === "swingdj");
-    const main2XPlaylist = playlists.find(p => p.name === "swingdj2X");
+    const mainPlaylist = playlists.find(p => p.name === sourcePlaylistName);
+    const main2XPlaylist = playlists.find(p => p.name === sourcePlaylist2XName);
 
     const mpTracksAll = await fetchAll(
       `${mainPlaylist.tracks.href}`,
@@ -482,10 +473,12 @@ class App extends Component {
     const { presets, selectedPresetIndex } = this.state;
     const preset = presets[selectedPresetIndex];
     const { bpmRanges } = preset;
+    let totalRate = 0;
+    bpmRanges.forEach(bpmRange => (totalRate += bpmRange.rate));
     return (
       <div>
         <div style={{ textAlign: "left" }}>
-          <span>
+          <div>
             Preset Name:{" "}
             <input
               value={preset.name}
@@ -496,8 +489,8 @@ class App extends Component {
                 });
               }}
             />
-          </span>
-          <span>
+          </div>
+          <div>
             Playlist duration:{" "}
             <input
               value={Math.round(preset.playlistDuration / 60000)}
@@ -507,7 +500,27 @@ class App extends Component {
               }}
             />
             min
-          </span>
+          </div>
+          <div>
+            Source Playlist:
+            <input
+              value={preset.sourcePlaylistName}
+              onChange={e => {
+                preset.sourcePlaylistName = e.target.value;
+                this.setState({ presets }, () => this.saveToLocalStorage());
+              }}
+            />
+          </div>
+          <div>
+            Source 2X Playlist:
+            <input
+              value={preset.sourcePlaylist2XName}
+              onChange={e => {
+                preset.sourcePlaylist2XName = e.target.value;
+                this.setState({ presets }, () => this.saveToLocalStorage());
+              }}
+            />
+          </div>
         </div>
         <table>
           {bpmRanges.map((bpmRange, i) => (
@@ -564,6 +577,16 @@ class App extends Component {
               </td>
             </tr>
           ))}
+          <tr>
+            <td />
+            <td />
+            <td style={{ backgroundColor: totalRate == 100 ? "white" : "red" }}>
+              {totalRate}%
+            </td>
+            <td />
+            <td />
+            <td />
+          </tr>
         </table>
         <div>
           {" "}
