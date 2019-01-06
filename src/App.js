@@ -27,7 +27,7 @@ const defaultBpmRanges = [
   { min: 190, max: 200, rate: 0.14 }*/
 ];
 
-const defaultPlaylistDuration = 5 * 60 * 60 * 1000;
+const defaultPlaylistDuration = 3 * 60 * 60 * 1000;
 
 function getHashParams() {
   var hashParams = {};
