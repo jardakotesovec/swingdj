@@ -620,6 +620,9 @@ class App extends Component {
         <header className="App-header">
           <img src={logo} className="App-logo" alt="logo" />
           <h1 className="App-title">SwingDj</h1>
+          <a href="https://github.com/jardakotesovec/swingdj/blob/master/README.md">
+            documentation
+          </a>
         </header>
         {content}
       </div>
