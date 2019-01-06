@@ -3,7 +3,9 @@ import logo from "./logo.svg";
 import "./App.css";
 import { cacheFirst } from "sw-toolbox";
 
-const redirect_uri = "http://localhost:4000/";
+// const redirect_uri = "http://localhost:4000/";
+const redirect_uri = "https://jardakotesovec.github.io/swingdj/";
+
 const client_id = "d2686e8e912a4591a9c0dd7a449bf456";
 const scope =
   "user-read-private user-read-email playlist-read-private playlist-read-collaborative playlist-modify-private";
