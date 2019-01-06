@@ -21,3 +21,4 @@ Its also possible to add local files (which does not exist in spotify) to swingd
 ## Known Issues
 
 * It can create playlist only up to 100 songs, which is about 5 hours. This can be improved if its needed.
+* Sometimes it takes Spotify app more time to detect new playlists. Restarting spotify can speed it up.
